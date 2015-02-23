@@ -20,6 +20,7 @@ if has("syntax")
   syntax on
 endif
 
+set guifont=Lucida_Console:h18
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 "set background=dark
@@ -47,6 +48,10 @@ endif
 "set hidden		" Hide buffers when they are abandoned
 "set mouse=a		" Enable mouse usage (all modes)
 
+"Vim colors solarized
+syntax enable
+set background=dark
+
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
@@ -69,7 +74,7 @@ augroup vimrc_autocmds
 	augroup END
 
 " Powerline setup
-"set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 14
 "set laststatus=2
 
 "Python Mode
@@ -93,9 +98,9 @@ let g:pymode_doc_key = 'K'
 
 "Linting
 let g:pymode_lint = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
 " Auto check on save
-let g:pymode_lint_write = 1
+let g:pymode_lint_checker = ['pyflakes', 'pep8', 'mccabe']
+let g:pymode_lint_on_write = 1
 
 " Support virtualenv
 let g:pymode_virtualenv = 1
@@ -110,6 +115,12 @@ let g:pymode_syntax_all = 1
 let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
+"autorun
+let g:pymode_run = 1 
+
+"error line
+let g:pymode_lint_message = 1 
+
 " Don't autofold code
 let g:pymode_folding = 0
 
@@ -119,12 +130,7 @@ nmap <leader>l :set list!<CR>
 "  automatically change window's cwd to file's dir
  set autochdir
 
-" " I'm prefer spaces to tabs
-" set tabstop=4
-" set shiftwidth=4
-" set expandtab
-"
- " more subtle popup colors 
+" more subtle popup colors 
  if has ('gui_running')
      highlight Pmenu guibg=#cccccc gui=bold    
 endif
@@ -142,3 +148,5 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
 Bundle 'bling/vim-airline'
+Plugin 'Lokaltog/vim-easymotion'
+Bundle 'joonty/vim-sauce.git'
