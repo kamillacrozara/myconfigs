@@ -1,118 +1,88 @@
-# /etc/zsh/zshrc: system-wide .zshrc file for zsh(1).
-#
-# This file is sourced only for interactive shells. It
-# should contain commands to set up aliases, functions,
-# options, key bindings, etc.
-#
-# Global Order: zshenv, zprofile, zshrc, zlogin
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
 
-READNULLCMD=${PAGER:-/usr/bin/pager}
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="re5et"
 
-# An array to note missing features to ease diagnosis in case of problems.
-typeset -ga debian_missing_features
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
 
-if [[ -z "$DEBIAN_PREVENT_KEYBOARD_CHANGES" ]] &&
-   [[ "$TERM" != 'emacs' ]]
-then
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
 
-    typeset -A key
-    key=(
-        BackSpace  "${terminfo[kbs]}"
-        Home       "${terminfo[khome]}"
-        End        "${terminfo[kend]}"
-        Insert     "${terminfo[kich1]}"
-        Delete     "${terminfo[kdch1]}"
-        Up         "${terminfo[kcuu1]}"
-        Down       "${terminfo[kcud1]}"
-        Left       "${terminfo[kcub1]}"
-        Right      "${terminfo[kcuf1]}"
-        PageUp     "${terminfo[kpp]}"
-        PageDown   "${terminfo[knp]}"
-    )
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
 
-    function bind2maps () {
-        local i sequence widget
-        local -a maps
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
 
-        while [[ "$1" != "--" ]]; do
-            maps+=( "$1" )
-            shift
-        done
-        shift
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
 
-        sequence="${key[$1]}"
-        widget="$2"
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
 
-        [[ -z "$sequence" ]] && return 1
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
 
-        for i in "${maps[@]}"; do
-            bindkey -M "$i" "$sequence" "$widget"
-        done
-    }
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
 
-    bind2maps emacs             -- BackSpace   backward-delete-char
-    bind2maps       viins       -- BackSpace   vi-backward-delete-char
-    bind2maps             vicmd -- BackSpace   vi-backward-char
-    bind2maps emacs             -- Home        beginning-of-line
-    bind2maps       viins vicmd -- Home        vi-beginning-of-line
-    bind2maps emacs             -- End         end-of-line
-    bind2maps       viins vicmd -- End         vi-end-of-line
-    bind2maps emacs viins       -- Insert      overwrite-mode
-    bind2maps             vicmd -- Insert      vi-insert
-    bind2maps emacs             -- Delete      delete-char
-    bind2maps       viins vicmd -- Delete      vi-delete-char
-    bind2maps emacs viins vicmd -- Up          up-line-or-history
-    bind2maps emacs viins vicmd -- Down        down-line-or-history
-    bind2maps emacs             -- Left        backward-char
-    bind2maps       viins vicmd -- Left        vi-backward-char
-    bind2maps emacs             -- Right       forward-char
-    bind2maps       viins vicmd -- Right       vi-forward-char
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-    # Make sure the terminal is in application mode, when zle is
-    # active. Only then are the values from $terminfo valid.
-    if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
-        function zle-line-init () {
-            emulate -L zsh
-            printf '%s' ${terminfo[smkx]}
-        }
-        function zle-line-finish () {
-            emulate -L zsh
-            printf '%s' ${terminfo[rmkx]}
-        }
-        zle -N zle-line-init
-        zle -N zle-line-finish
-    else
-        for i in {s,r}mkx; do
-            (( ${+terminfo[$i]} )) || debian_missing_features+=($i)
-        done
-        unset i
-    fi
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
 
-    unfunction bind2maps
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
 
-fi # [[ -z "$DEBIAN_PREVENT_KEYBOARD_CHANGES" ]] && [[ "$TERM" != 'emacs' ]]
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git jump)
 
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin \
-                                           /usr/local/bin  \
-                                           /usr/sbin       \
-                                           /usr/bin        \
-                                           /sbin           \
-                                           /bin            \
-                                           /usr/X11R6/bin
+# User configuration
 
-(( ${+aliases[run-help]} )) && unalias run-help
-autoload -Uz run-help
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+# export MANPATH="/usr/local/man:$MANPATH"
 
-# If you don't want compinit called here, place the line
-# skip_global_compinit=1
-# in your $ZDOTDIR/.zshenv or $ZDOTDIR/.zprofile
-if [[ -z "$skip_global_compinit" ]]; then
-  autoload -U compinit
-  compinit
-fi
-
-if [[ -r ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh ]]; then
-	    source ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
-fi
+source $ZSH/oh-my-zsh.sh
 
 export TERM='xterm-256color'
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+source ~/.bashrc
