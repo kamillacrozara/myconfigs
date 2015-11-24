@@ -11,11 +11,14 @@ call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 " call vundle#begin('~/some/path/here')
 " let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
 
 "Plugins list
-Plugin 'tpope/vim-fugitive'
+Plugin 'VundleVim/Vundle.vim'
 Plugin 'klen/python-mode'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'bling/vim-airline'
+Plugin 'davidhalter/jedi-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -30,6 +33,7 @@ map <F2> :NERDTreeToggle<CR>
 
 "Airline
 let g:airline_powerline_fonts = 1
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 "Solarized
 syntax enable
@@ -65,7 +69,7 @@ let g:pymode_virtualenv = 1
 let g:pymode_run = 1
 let g:pymode_lint_on_fly = 0
 let g:pymode_lint_message = 1
-let g:pymode_rope = 1
+let g:pymode_rope = 0
 let g:pymode_rope_completion = 1
 let g:pymode_syntax = 1
 let g:pymode_syntax_all = 1
